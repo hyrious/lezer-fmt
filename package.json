@@ -1,0 +1,37 @@
+{
+  "name": "@hyrious/lezer-fmt",
+  "version": "0.1.0",
+  "description": "Code formatter based on lezer parser",
+  "keywords": [
+    "formatter",
+    "prettier",
+    "javascript"
+  ],
+  "repository": "hyrious/lezer-fmt",
+  "license": "MIT",
+  "author": "hyrious <hyrious@outlook.com>",
+  "type": "commonjs",
+  "exports": {
+    "node": {
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
+    },
+    "default": "./dist/index.mjs"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": "dist/cli.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "dependencies": {
+    "@lezer/common": "^1.2.1"
+  },
+  "devDependencies": {
+    "@hyrious/configs": "^0.1.2",
+    "@lezer/javascript": "^1.4.17",
+    "vite": "^5.3.1"
+  }
+}
