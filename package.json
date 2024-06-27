@@ -26,6 +26,9 @@
     "src",
     "dist"
   ],
+  "scripts": {
+    "dev": "vite"
+  },
   "dependencies": {
     "@lezer/common": "^1.2.1"
   },

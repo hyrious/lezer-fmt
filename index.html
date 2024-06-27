@@ -4,8 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Test</title>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100% }
+    body { margin: 0; display: flex; flex-flow: column nowrap; padding: 10px }
+    main { flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px }
+    textarea { padding: 10px; font: 1rem / 1.2 monospace; }
+  </style>
 </head>
 <body>
+
+  <main>
+    <textarea id="input" placeholder="input"></textarea>
+    <textarea id="output" placeholder="output"></textarea>
+  </main>
+
   <script type="module" src="/main.ts"></script>
 </body>
 </html>
