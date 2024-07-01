@@ -10,14 +10,20 @@
     html, body { height: 100% }
     body { margin: 0; display: flex; flex-flow: column nowrap; padding: 10px }
     main { flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px }
-    textarea { padding: 10px; font: 1rem / 1.2 monospace; }
+    section { display: flex; flex-flow: column nowrap }
+    textarea { flex: 1; padding: 10px; font: 1rem / 1.2 monospace; }
+    output { padding: 5px 0 1px; white-space: pre-wrap; word-break: break-word; }
+    output:empty { padding: 0 }
   </style>
 </head>
 <body>
 
   <main>
-    <textarea id="input" placeholder="input"></textarea>
-    <textarea id="output" placeholder="output"></textarea>
+    <textarea id="input" placeholder="input">[1, "foo", { bar: 2 }];</textarea>
+    <section>
+      <textarea id="output" placeholder="output"></textarea>
+      <output id="scopes"></output>
+    </section>
   </main>
 
   <script type="module" src="/main.ts"></script>

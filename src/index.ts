@@ -1,11 +1,14 @@
 import {Parser, Tree, type Input} from '@lezer/common'
 
+export type QueryResponse = [from: number, token: string, scopes: string[]]
+
 export type Printer = Parameters<Tree['iterate']>[0] & {
   input: string | Input
   readonly output: string
   readonly ready?: Promise<void>
   done?(): void
   dispose?(): void
+  query?(at: number): QueryResponse | undefined
 }
 
 export interface FormatOptions {
@@ -217,9 +220,11 @@ export function definePrinter(options: {
   },
   /** Example: `space.after`. */
   defaultSpec?: Space,
+  /** Store scopes for later query. */
+  debug?: boolean,
 }): Printer {
   const {collapseSpace = 1, collapseNewline = 2, trimTrailingSpace = true,
-         spec = {}, defaultSpec} = options
+         spec = {}, defaultSpec, debug} = options
 
   const rules: Rule[] = []
   for (let selector in spec) {
@@ -240,6 +245,16 @@ export function definePrinter(options: {
     return ' '.repeat(at - i - 1)
   }
 
+  let mapping: [at: number, token: string, scopes: string[]][] = []
+
+  function log(node: { readonly from: number, readonly to: number }, at = output.length) {
+    if (debug) mapping.push([
+      at,
+      slice.call(input, node.from, node.to),
+      scopes.slice(),
+    ]);
+  }
+
   const printer: Printer = {
     get input() { return input },
     set input(value) {
@@ -256,7 +271,6 @@ export function definePrinter(options: {
     },
     leave(node) {
       if (enter) {
-        console.log(scopes.join('/'), [slice.call(input, node.from, node.to)])
         if (collapseNewline) {
           let gap = slice.call(input, last.to, node.from)
           let newline = gap.split('\n').length - 1
@@ -293,6 +307,7 @@ export function definePrinter(options: {
           }
         }
 
+        log(node)
         output += s
 
         if (s && (rule == space.after || rule == space.around)) output += ' '
@@ -312,7 +327,24 @@ export function definePrinter(options: {
       output = ''
       scopes = []
       last = { from: 0, to: 0 }
+      mapping = []
     },
+    query(at) {
+      let i = 0, j = mapping.length - 1
+      while (i <= j) {
+        let m = Math.floor(i + (j - i) / 2)
+        if (mapping[m][0] < at) {
+          i = m + 1
+        } else if (mapping[m][0] > at) {
+          j = m - 1
+        } else {
+          return mapping[m] as QueryResponse
+        }
+      }
+      if (0 < i && i <= mapping.length) {
+        return mapping[i - 1] as QueryResponse
+      }
+    }
   }
 
   return printer
